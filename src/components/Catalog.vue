@@ -2,21 +2,29 @@
 import { ref, onMounted, computed } from 'vue';
 import CategoryTree from './category-tree/CategoryTree.vue';
 import Product from './Product.vue';
+import ProductModal from './modal/ProductModal.vue';
+
+import type ProductInterface from '@/types/ProductInterface';
+import type CategoryInterface from '@/types/CategoryInterface';
 
 const catalogTree: any = ref({});
 
-async function fetchCatalogTree() {
-    const request = await fetch('/data/catalog.json');
-    catalogTree.value = await request.json(); 
-}
+let isCatalogLoaded = ref<Boolean>(false);
+let selectedProduct = ref<ProductInterface | null>(null);
 
 onMounted(async () => {
     await fetchCatalogTree();
 });
 
+async function fetchCatalogTree() {
+    const request = await fetch('/data/catalog.json');
+    catalogTree.value = await request.json(); 
+    isCatalogLoaded.value = true;
+}
+
 function getCategoryProducts(category: any) {
-    let products: any = [];
-    let isProduct = !category.children;
+    let products: Array<ProductInterface> = [];
+    let isProduct = !category?.children;
     if(isProduct){
         products.push(category);
     } else {
@@ -27,6 +35,18 @@ function getCategoryProducts(category: any) {
     return products;
 }
 
+function onCategoryTreeFilterChange(filteredTree: CategoryInterface) {
+    catalogTree.value = filteredTree;
+}
+
+function onProductSelected(clickedProduct: ProductInterface) {
+    selectedProduct.value = clickedProduct;
+}
+
+function onProductModalClose(result: any) {
+    selectedProduct.value = null;
+}
+
 const products = computed(() => {
     return getCategoryProducts(catalogTree.value);    
 })
@@ -34,10 +54,11 @@ const products = computed(() => {
 </script>
 
 <template>
-    <div class="catalog-wrapper">
-        <CategoryTree :tree="catalogTree"></CategoryTree>
+    <div class="catalog-wrapper" v-if="isCatalogLoaded">
+        <CategoryTree :tree="catalogTree" @category-tree-filter-change="onCategoryTreeFilterChange"></CategoryTree>
         <div class="products-container">
-            <Product v-for="product in products" :product="product"></Product>
+            <Product v-for="product in products" @product-select="onProductSelected($event)" :product="product"></Product>
+            <ProductModal @modal-close="onProductModalClose" :is-modal-visible="!!selectedProduct" :product="selectedProduct"></ProductModal>
         </div>
     </div>
 

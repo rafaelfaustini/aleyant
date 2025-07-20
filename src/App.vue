@@ -5,7 +5,7 @@ import Catalog from './components/Catalog.vue'
 <template>
   <header>
     <div class="wrapper">
-      <Catalog msg="You did it!" />
+      <Catalog />
     </div>
   </header>
 

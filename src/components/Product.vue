@@ -1,14 +1,24 @@
 <script setup lang="ts">
+import type ProductInterface from '@/types/ProductInterface';
+import type { PropType } from 'vue';
+
     const props = defineProps({
         product: {
-            type: Object,
-            require: true
+            type: Object as PropType<ProductInterface>,
+            required: true
         },
-    })
+    });
+    const emit = defineEmits<{
+    (e: 'product-select', selectedProduct: ProductInterface): void;
+    }>();
+
+    function selectProduct() {
+        emit('product-select', props.product);
+    }
 </script>
 
 <template>
-    <div class="product-container">
+    <div class="product-container" @click="selectProduct">
         <img class="product-image" :src="props.product?.image" alt="">
         <span class="product-title">{{ props.product?.name }}</span>
         <span class="product-price-range">{{ props.product?.priceRange }}</span>
@@ -40,7 +50,7 @@
     }
     .product-title {
         font-size: 14px;
-        color: #0066cc;
+        color: var(--color-primary);
     }
     .product-price-range {
         font-weight: 500;

@@ -19,3 +19,7 @@ By analysing the provided JSON, the clearest way to distinguish a **category** f
 ### Dictionary
 
 To avoid multiple tree searching for products, having ids in the categories would allow the front-end to have a map of `categories x products` and directly accessing them.
+
+###
+
+For styling purposes I used icons all in public domain available in https://openclipart.org/

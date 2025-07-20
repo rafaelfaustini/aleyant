@@ -6,7 +6,9 @@
 /* semantic color variables for this project */
 :root {
   --color-background: #f5f4fc;
-
+  --color-primary: #0066cc;
+  --color-primary-light: #0f77df;
+  --color-primary-dark: #0152a2;
 }
 
 
